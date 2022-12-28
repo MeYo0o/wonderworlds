@@ -20,6 +20,9 @@ import 'package:user_repository/user_repository.dart';
 import 'package:wonder_words/l10n/app_localizations.dart';
 import 'package:wonder_words/routing_table.dart';
 import 'package:wonder_words/screen_view_observer.dart';
+import 'package:firebase_core/firebase_core.dart';
+
+import 'firebase_options.dart';
 
 void main() async {
   // Has to be late so it doesn't instantiate before the
@@ -29,6 +32,11 @@ void main() async {
   runZonedGuarded<Future<void>>(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
+
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+
       await initializeMonitoringPackage();
 
       final remoteValueService = RemoteValueService();
