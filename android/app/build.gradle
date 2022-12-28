@@ -35,7 +35,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.raywenderlich.wonder_words"
+        applicationId "com.meyo.wonderwords"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
