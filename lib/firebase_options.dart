@@ -59,11 +59,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyC10KlgpzZTlldxiB-sFGsA5TeT76Lj1R8',
-    appId: '1:546324602922:ios:4922dc7b8045c7d7076353',
+    appId: '1:546324602922:ios:5d6fee765061c30f076353',
     messagingSenderId: '546324602922',
     projectId: 'wonder-words-kodeco',
     storageBucket: 'wonder-words-kodeco.appspot.com',
-    iosClientId: '546324602922-80425csqkgj5g0bgj86qtb94ot3na3nf.apps.googleusercontent.com',
-    iosBundleId: 'com.raywenderlich.wonderWords',
+    iosClientId: '546324602922-vhco5m6pgnqe75q94uib60hon2co0g44.apps.googleusercontent.com',
+    iosBundleId: 'com.meyo.wonderwords',
   );
 }
