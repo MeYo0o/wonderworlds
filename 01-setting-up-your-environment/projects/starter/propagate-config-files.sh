@@ -57,12 +57,14 @@ WANTED_SUBFOLDER_2='.vscode'
 
 WANTED_SUBFOLDER_3='android/app/src/google-services.json'
 WANTED_SUBFOLDER_4='ios/Runner/GoogleService-Info.plist'
+WANTED_SUBFOLDER_5='lib/firebase_options.dart'
 
 ARR_WANTED=( 
 	"${WANTED_SUBFOLDER_1}"
 	"${WANTED_SUBFOLDER_2}"
 	"${WANTED_SUBFOLDER_3}"
 	"${WANTED_SUBFOLDER_4}"
+	"${WANTED_SUBFOLDER_5}"
 )
 
 # Get root directory: /mnt/c/scripts/epidemy/

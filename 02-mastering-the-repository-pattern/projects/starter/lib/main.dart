@@ -4,6 +4,7 @@ import 'dart:isolate';
 import 'package:component_library/component_library.dart';
 import 'package:domain_models/domain_models.dart';
 import 'package:fav_qs_api/fav_qs_api.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:forgot_my_password/forgot_my_password.dart';
@@ -20,6 +21,8 @@ import 'package:user_repository/user_repository.dart';
 import 'package:wonder_words/l10n/app_localizations.dart';
 import 'package:wonder_words/routing_table.dart';
 import 'package:wonder_words/screen_view_observer.dart';
+
+import 'firebase_options.dart';
 
 void main() async {
   // Has to be late so it doesn't instantiate before the
@@ -44,6 +47,10 @@ void main() async {
             errorAndStacktrace.last,
           );
         }).sendPort,
+      );
+
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
       );
 
       runApp(
