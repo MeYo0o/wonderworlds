@@ -25,7 +25,110 @@ class QuoteRepository {
     String? favoritedByUsername,
     required QuoteListPageFetchPolicy fetchPolicy,
   }) async* {
-    throw UnimplementedError();
+    final isFilteringByTag = tag != null;
+
+    final isSearching = searchTerm.isNotEmpty;
+
+    final isFetchPolicyNetworkOnly =
+        fetchPolicy == QuoteListPageFetchPolicy.networkOnly;
+
+    final shouldSkipCacheLookup =
+        isFilteringByTag || isSearching || isFetchPolicyNetworkOnly;
+
+    if (shouldSkipCacheLookup) {
+      final freshPage = await _getQuoteListPageFromNetwork(
+        pageNumber,
+        tag: tag,
+        searchTerm: searchTerm,
+        favoritedByUsername: favoritedByUsername,
+      );
+      yield freshPage;
+    } else {
+      final isFilteringFavorites = favoritedByUsername != null;
+
+      final cachedPage = await _localStorage.getQuoteListPage(
+        pageNumber,
+        isFilteringFavorites,
+      );
+
+      final isFetchPolicyCacheAndNetwork =
+          fetchPolicy == QuoteListPageFetchPolicy.cacheAndNetwork;
+
+      final isFetchPolicyCachePreferably =
+          fetchPolicy == QuoteListPageFetchPolicy.cachePreferably;
+
+      final shouldEmitCachedPageInAdvance =
+          isFetchPolicyCachePreferably || isFetchPolicyCacheAndNetwork;
+
+      if (shouldEmitCachedPageInAdvance && cachedPage != null) {
+        yield cachedPage.toDomainModel();
+
+        if (isFetchPolicyCachePreferably) {
+          return;
+        }
+      }
+
+      try {
+        final freshPage = await _getQuoteListPageFromNetwork(
+          pageNumber,
+          favoritedByUsername: favoritedByUsername,
+        );
+        yield freshPage;
+      } catch (_) {
+        final isFetchPolicyNetworkPreferably =
+            fetchPolicy == QuoteListPageFetchPolicy.networkPreferably;
+
+        if (cachedPage != null && isFetchPolicyNetworkPreferably) {
+          yield cachedPage.toDomainModel();
+          return;
+        }
+
+        rethrow;
+      }
+    }
+  }
+
+  //QuoteListPageFetchPolicy [networkOnly]
+  Future<QuoteListPage> _getQuoteListPageFromNetwork(
+    int pageNumber, {
+    Tag? tag,
+    String searchTerm = '',
+    String? favoritedByUsername,
+  }) async {
+    try {
+      final apiPage = await remoteApi.getQuoteListPage(
+        pageNumber,
+        tag: tag?.toRemoteModel(),
+        searchTerm: searchTerm,
+        favoritedByUsername: favoritedByUsername,
+      );
+
+      final isFiltering = tag != null || searchTerm.isNotEmpty;
+
+      final favoritesOnly = favoritedByUsername != null;
+
+      final shouldStoreOnCache = !isFiltering;
+
+      if (shouldStoreOnCache) {
+        final shouldEmptyCache = pageNumber == 1;
+
+        if (shouldEmptyCache) {
+          await _localStorage.clearQuoteListPageList(favoritesOnly);
+        }
+
+        final cachePage = apiPage.toCacheModel();
+        await _localStorage.upsertQuoteListPage(
+          pageNumber,
+          cachePage,
+          favoritesOnly,
+        );
+      }
+
+      final domainPage = apiPage.toDomainModel();
+      return domainPage;
+    } on EmptySearchResultFavQsException catch (_) {
+      throw EmptySearchResultException();
+    }
   }
 
   Future<Quote> getQuoteDetails(int id) async {
