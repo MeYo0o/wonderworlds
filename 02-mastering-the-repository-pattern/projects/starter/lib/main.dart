@@ -32,6 +32,11 @@ void main() async {
   runZonedGuarded<Future<void>>(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
+
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+
       await initializeMonitoringPackage();
 
       final remoteValueService = RemoteValueService();
@@ -47,10 +52,6 @@ void main() async {
             errorAndStacktrace.last,
           );
         }).sendPort,
-      );
-
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
       );
 
       runApp(
