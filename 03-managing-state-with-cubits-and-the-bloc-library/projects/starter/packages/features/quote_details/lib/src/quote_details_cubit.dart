@@ -41,38 +41,65 @@ class QuoteDetailsCubit extends Cubit<QuoteDetailsState> {
   }
 
   void upvoteQuote() async {
-    try {
-      final updatedQuote = await quoteRepository.upvoteQuote(quoteId);
-
-      emit(
-        QuoteDetailsSuccess(
-          quote: updatedQuote,
-        ),
-      );
-    } catch (e) {
-      final lastState = state;
-
-      if (lastState is QuoteDetailsSuccess) {
-        emit(
-          QuoteDetailsSuccess(
-            quote: lastState.quote,
-            quoteUpdateError: e,
-          ),
-        );
-      }
-    }
+    _quoteDetailsAPIhelper(QuoteDetailsAPIHelper.upvote);
   }
 
   void downvoteQuote() async {
-    // TODO: Challenge.
+    _quoteDetailsAPIhelper(QuoteDetailsAPIHelper.downvote);
   }
+
   void unvoteQuote() async {
-    // TODO: Challenge.
+    _quoteDetailsAPIhelper(QuoteDetailsAPIHelper.unvote);
   }
+
   void favoriteQuote() async {
-    // TODO: Challenge.
+    _quoteDetailsAPIhelper(QuoteDetailsAPIHelper.favorite);
   }
+
   void unfavoriteQuote() async {
-    // TODO: Challenge.
+    _quoteDetailsAPIhelper(QuoteDetailsAPIHelper.unfavorite);
   }
+
+  void _quoteDetailsAPIhelper(QuoteDetailsAPIHelper quoteDetailsAPIType) async {
+    try {
+      Quote updatedQuote;
+      switch (quoteDetailsAPIType) {
+        case QuoteDetailsAPIHelper.upvote:
+          updatedQuote = await quoteRepository.upvoteQuote(quoteId);
+          break;
+        case QuoteDetailsAPIHelper.downvote:
+          updatedQuote = await quoteRepository.downvoteQuote(quoteId);
+          break;
+        case QuoteDetailsAPIHelper.unvote:
+          updatedQuote = await quoteRepository.unvoteQuote(quoteId);
+          break;
+        case QuoteDetailsAPIHelper.favorite:
+          updatedQuote = await quoteRepository.favoriteQuote(quoteId);
+          break;
+        case QuoteDetailsAPIHelper.unfavorite:
+          updatedQuote = await quoteRepository.unfavoriteQuote(quoteId);
+          break;
+      }
+
+      emit(
+        QuoteDetailsSuccess(quote: updatedQuote),
+      );
+    } catch (e) {
+      final lastState = state;
+      if (lastState is QuoteDetailsSuccess) {
+        emit(QuoteDetailsSuccess(
+          quote: lastState.quote,
+          quoteUpdateError: e,
+        ));
+      }
+    }
+  }
+}
+
+enum QuoteDetailsAPIHelper {
+  upvote,
+  downvote,
+  unvote,
+  favorite,
+  unfavorite,
 }
