@@ -26,9 +26,17 @@ class QuoteDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return QuoteDetailsView(
-      onAuthenticationError: onAuthenticationError,
-      shareableLinkGenerator: shareableLinkGenerator,
+    return BlocProvider<QuoteDetailsCubit>(
+      create: (_) {
+        return QuoteDetailsCubit(
+          quoteId: quoteId,
+          quoteRepository: quoteRepository,
+        );
+      },
+      child: QuoteDetailsView(
+        onAuthenticationError: onAuthenticationError,
+        shareableLinkGenerator: shareableLinkGenerator,
+      ),
     );
   }
 }
@@ -46,8 +54,65 @@ class QuoteDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StyledStatusBar.dark(
-      child: Placeholder(),
+    return BlocConsumer<QuoteDetailsCubit, QuoteDetailsState>(
+      listener: (context, state) {
+        final quoteUpdateError =
+            state is QuoteDetailsSuccess ? state.quoteUpdateError : null;
+
+        if (quoteUpdateError != null) {
+          final snackBar =
+              quoteUpdateError is UserAuthenticationRequiredException
+                  ? const AuthenticationRequiredErrorSnackBar()
+                  : const GenericErrorSnackBar();
+
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(snackBar);
+
+          if (quoteUpdateError is UserAuthenticationRequiredException) {
+            onAuthenticationError();
+          }
+        }
+      },
+      builder: (context, state) {
+        return StyledStatusBar.dark(
+          child: WillPopScope(
+            onWillPop: () async {
+              final displayedQuote =
+                  state is QuoteDetailsSuccess ? state.quote : null;
+              Navigator.of(context).pop(displayedQuote);
+              return false;
+            },
+            child: Scaffold(
+              appBar: state is QuoteDetailsSuccess
+                  ? _QuoteActionsAppBar(
+                      quote: state.quote,
+                      shareableLinkGenerator: shareableLinkGenerator,
+                    )
+                  : null,
+              body: SafeArea(
+                child: Padding(
+                  padding: EdgeInsets.all(
+                    WonderTheme.of(context).screenMargin,
+                  ),
+                  child: state is QuoteDetailsSuccess
+                      ? _Quote(
+                          quote: state.quote,
+                        )
+                      : state is QuoteDetailsFailure
+                          ? ExceptionIndicator(
+                              onTryAgain: () {
+                                final cubit = context.read<QuoteDetailsCubit>();
+                                cubit.refetch();
+                              },
+                            )
+                          : const CenteredCircularProgressIndicator(),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
