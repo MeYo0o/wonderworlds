@@ -1,6 +1,34 @@
 part of 'sign_in_cubit.dart';
 
-// TODO: Create your state class.
+class SignInState extends Equatable {
+  final Email email;
+  final Password password;
+  final SubmissionStatus? submissionStatus;
+
+  const SignInState({
+    this.email = const Email.unvalidated(),
+    this.password = const Password.unvalidated(),
+    this.submissionStatus,
+  });
+
+  SignInState copyWith({
+    Email? email,
+    Password? password,
+    SubmissionStatus? submissionStatus,
+  }) =>
+      SignInState(
+        email: email ?? this.email,
+        password: password ?? this.password,
+        submissionStatus: submissionStatus,
+      );
+
+  @override
+  List<Object?> get props => [
+        email,
+        password,
+        submissionStatus,
+      ];
+}
 
 enum SubmissionStatus {
   /// Used when the form has not been sent yet.

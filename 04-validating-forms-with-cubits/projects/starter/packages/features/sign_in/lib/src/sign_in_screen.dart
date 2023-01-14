@@ -97,7 +97,38 @@ class _SignInForm extends StatefulWidget {
 }
 
 class _SignInFormState extends State<_SignInForm> {
-  // TODO: Create the FocusNodes.
+  final _emailFocusNode = FocusNode();
+  final _passwordFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+
+    final cubit = context.read<SignInCubit>();
+
+    _emailFocusNode.addListener(
+      () {
+        if (!_emailFocusNode.hasFocus) {
+          cubit.onEmailUnfocused();
+        }
+      },
+    );
+
+    if (!_passwordFocusNode.hasFocus) {
+      _passwordFocusNode.addListener(
+        () {
+          cubit.onPasswordUnfocused();
+        },
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,18 +137,42 @@ class _SignInFormState extends State<_SignInForm> {
       listenWhen: (oldState, newState) =>
           oldState.submissionStatus != newState.submissionStatus,
       listener: (context, state) {
-        // TODO: Execute one-off actions based on state changes.
+        if (state.submissionStatus == SubmissionStatus.success) {
+          widget.onSignInSuccess();
+          return;
+        }
+        final hasSubmissionError = state.submissionStatus ==
+                SubmissionStatus.genericError ||
+            state.submissionStatus == SubmissionStatus.invalidCredentialsError;
+
+        if (hasSubmissionError) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              state.submissionStatus == SubmissionStatus.invalidCredentialsError
+                  ? SnackBar(
+                      content: Text(
+                        l10n.invalidCredentialsErrorMessage,
+                      ),
+                    )
+                  : const GenericErrorSnackBar(),
+            );
+        }
       },
       builder: (context, state) {
         final emailError = state.email.invalid ? state.email.error : null;
-        // TODO: Check for errors in the password state.
-        final isSubmissionInProgress = false;
+
+        final passwordError =
+            state.password.invalid ? state.password.error : null;
+
+        final isSubmissionInProgress =
+            state.submissionStatus == SubmissionStatus.inProgress;
 
         final cubit = context.read<SignInCubit>();
         return Column(
           children: <Widget>[
             TextField(
-              // TODO: Attach _emailFocusNode.
+              focusNode: _emailFocusNode,
               onChanged: cubit.onEmailChanged,
               textInputAction: TextInputAction.next,
               autocorrect: false,
@@ -138,17 +193,21 @@ class _SignInFormState extends State<_SignInForm> {
               height: Spacing.large,
             ),
             TextField(
-              // TODO: Attach _passwordFocusNode.
-              // TODO: Forward password change events to the Cubit.
+              focusNode: _passwordFocusNode,
+              onChanged: cubit.onPasswordChanged,
               obscureText: true,
-              // TODO: Forward the onEditingComplete to the Cubit.
+              onEditingComplete: cubit.onSubmit,
               decoration: InputDecoration(
                 suffixIcon: const Icon(
                   Icons.password,
                 ),
                 enabled: !isSubmissionInProgress,
                 labelText: l10n.passwordTextFieldLabel,
-                // TODO: Display the password validation error if any.
+                errorText: passwordError == null
+                    ? null
+                    : (passwordError == PasswordValidationError.empty
+                        ? l10n.passwordTextFieldEmptyErrorMessage
+                        : l10n.passwordTextFieldInvalidErrorMessage),
               ),
             ),
             TextButton(
@@ -166,7 +225,7 @@ class _SignInFormState extends State<_SignInForm> {
                     label: l10n.signInButtonLabel,
                   )
                 : ExpandedElevatedButton(
-                    // TODO: Forward the onTap event to the Cubit.
+                    onTap: cubit.onSubmit,
                     label: l10n.signInButtonLabel,
                     icon: const Icon(
                       Icons.login,
