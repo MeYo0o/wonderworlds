@@ -103,24 +103,17 @@ class _SignInFormState extends State<_SignInForm> {
   @override
   void initState() {
     super.initState();
-
     final cubit = context.read<SignInCubit>();
-
-    _emailFocusNode.addListener(
-      () {
-        if (!_emailFocusNode.hasFocus) {
-          cubit.onEmailUnfocused();
-        }
-      },
-    );
-
-    if (!_passwordFocusNode.hasFocus) {
-      _passwordFocusNode.addListener(
-        () {
-          cubit.onPasswordUnfocused();
-        },
-      );
-    }
+    _emailFocusNode.addListener(() {
+      if (!_emailFocusNode.hasFocus) {
+        cubit.onEmailUnfocused();
+      }
+    });
+    _passwordFocusNode.addListener(() {
+      if (!_passwordFocusNode.hasFocus) {
+        cubit.onPasswordUnfocused();
+      }
+    });
   }
 
   @override
@@ -141,6 +134,7 @@ class _SignInFormState extends State<_SignInForm> {
           widget.onSignInSuccess();
           return;
         }
+
         final hasSubmissionError = state.submissionStatus ==
                 SubmissionStatus.genericError ||
             state.submissionStatus == SubmissionStatus.invalidCredentialsError;
@@ -161,10 +155,8 @@ class _SignInFormState extends State<_SignInForm> {
       },
       builder: (context, state) {
         final emailError = state.email.invalid ? state.email.error : null;
-
         final passwordError =
             state.password.invalid ? state.password.error : null;
-
         final isSubmissionInProgress =
             state.submissionStatus == SubmissionStatus.inProgress;
 

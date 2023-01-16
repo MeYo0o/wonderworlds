@@ -8,7 +8,7 @@ class SignInState extends Equatable {
   const SignInState({
     this.email = const Email.unvalidated(),
     this.password = const Password.unvalidated(),
-    this.submissionStatus,
+    this.submissionStatus = SubmissionStatus.idle,
   });
 
   SignInState copyWith({
@@ -19,7 +19,7 @@ class SignInState extends Equatable {
       SignInState(
         email: email ?? this.email,
         password: password ?? this.password,
-        submissionStatus: submissionStatus,
+        submissionStatus: submissionStatus ?? this.submissionStatus,
       );
 
   @override
