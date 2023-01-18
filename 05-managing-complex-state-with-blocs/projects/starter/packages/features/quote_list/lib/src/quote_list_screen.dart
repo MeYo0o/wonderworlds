@@ -75,9 +75,26 @@ class _QuoteListViewState extends State<QuoteListView> {
 
   @override
   void initState() {
-    // TODO: Forward subsequent page requests to the Bloc.
+    _pagingController.addPageRequestListener((pageNumber) {
+      final isSubsequentPage = pageNumber > 1;
+      if (isSubsequentPage) {
+        _bloc.add(
+          QuoteListNextPageRequested(
+            pageNumber: pageNumber,
+          ),
+        );
+      }
+    });
 
-    // TODO: Forward changes in the search bar to the Bloc.
+    _searchBarController.addListener(
+      () {
+        _bloc.add(
+          QuoteListSearchTermChanged(
+            _searchBarController.text,
+          ),
+        );
+      },
+    );
 
     super.initState();
   }
@@ -137,7 +154,9 @@ class _QuoteListViewState extends State<QuoteListView> {
                   Expanded(
                     child: RefreshIndicator(
                       onRefresh: () {
-                        // TODO: Forward pull-to-refresh gestures to the Bloc.
+                        _bloc.add(
+                          const QuoteListRefreshed(),
+                        );
 
                         // Returning a Future inside `onRefresh` enables the loading
                         // indicator to disappear automatically once the refresh is

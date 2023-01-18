@@ -22,20 +22,101 @@ class QuoteListBloc extends Bloc<QuoteListEvent, QuoteListState> {
         ) {
     _registerEventHandler();
 
-    // TODO: Watch the user's authentication status.
+    _authChangesSubscription = userRepository.getUser().listen(
+      (user) {
+        _authenticatedUsername = user?.username;
+
+        add(
+          const QuoteListUsernameObtained(),
+        );
+      },
+    );
   }
 
   late final StreamSubscription _authChangesSubscription;
   String? _authenticatedUsername;
-  
+
   final QuoteRepository _quoteRepository;
 
   void _registerEventHandler() {
-    // TODO: Take in the events.
+    on<QuoteListEvent>(
+// 2
+      (event, emitter) async {
+// 3
+        if (event is QuoteListUsernameObtained) {
+          await _handleQuoteListUsernameObtained(emitter);
+        } else if (event is QuoteListFailedFetchRetried) {
+          await _handleQuoteListFailedFetchRetried(emitter);
+        } else if (event is QuoteListItemUpdated) {
+          _handleQuoteListItemUpdated(emitter, event);
+        } else if (event is QuoteListTagChanged) {
+          await _handleQuoteListTagChanged(emitter, event);
+        } else if (event is QuoteListSearchTermChanged) {
+          await _handleQuoteListSearchTermChanged(emitter, event);
+        } else if (event is QuoteListRefreshed) {
+          await _handleQuoteListRefreshed(emitter, event);
+        } else if (event is QuoteListNextPageRequested) {
+          await _handleQuoteListNextPageRequested(emitter, event);
+        } else if (event is QuoteListItemFavoriteToggled) {
+          await _handleQuoteListItemFavoriteToggled(emitter, event);
+        } else if (event is QuoteListFilterByFavoritesToggled) {
+          await _handleQuoteListFilterByFavoritesToggled(emitter);
+        }
+      },
+      transformer: (eventStream, eventHandler) {
+        final nonDebounceEventStream = eventStream.where(
+          (event) => event is! QuoteListSearchTermChanged,
+        );
+
+        final debounceEventStream = eventStream
+            .whereType<QuoteListSearchTermChanged>()
+            .debounceTime(
+              const Duration(seconds: 1),
+            )
+            .where(
+          (event) {
+            final previousFilter = state.filter;
+            final previousSearchTerm =
+                previousFilter is QuoteListFilterBySearchTerm
+                    ? previousFilter.searchTerm
+                    : '';
+
+            final isSearchNotAlreadyDisplayed =
+                event.searchTerm != previousSearchTerm;
+
+            return isSearchNotAlreadyDisplayed;
+          },
+        );
+        final mergedEventStream = MergeStream(
+          [
+            nonDebounceEventStream,
+            debounceEventStream,
+          ],
+        );
+
+        final restartableTransformer = restartable<QuoteListEvent>();
+        return restartableTransformer(mergedEventStream, eventHandler);
+      },
+    );
   }
 
   Future<void> _handleQuoteListUsernameObtained(Emitter emitter) async {
-    // TODO: Handle QuoteListUsernameObtained.
+// 1
+    emitter(
+      QuoteListState(
+        filter: state.filter,
+      ),
+    );
+// 2
+    final firstPageFetchStream = _fetchQuotePage(
+      1,
+      fetchPolicy: QuoteListPageFetchPolicy.cacheAndNetwork,
+    );
+// 3
+    return emitter.onEach<QuoteListState>(
+      firstPageFetchStream,
+      onData: emitter,
+    );
   }
 
   Future<void> _handleQuoteListFailedFetchRetried(Emitter emitter) {
@@ -240,7 +321,81 @@ class QuoteListBloc extends Bloc<QuoteListEvent, QuoteListState> {
     );
   }
 
-  // TODO: Create a utility function that fetches a given page.
+  Stream<QuoteListState> _fetchQuotePage(
+    int page, {
+    required QuoteListPageFetchPolicy fetchPolicy,
+    bool isRefresh = false,
+  }) async* {
+// 1
+    final currentlyAppliedFilter = state.filter;
+// 2
+    final isFilteringByFavorites =
+        currentlyAppliedFilter is QuoteListFilterByFavorites;
+// 3
+    final isUserSignedIn = _authenticatedUsername != null;
+    if (isFilteringByFavorites && !isUserSignedIn) {
+// 4
+      yield QuoteListState.noItemsFound(
+        filter: currentlyAppliedFilter,
+      );
+    } else {
+      final pageStream = _quoteRepository.getQuoteListPage(
+        page,
+        tag: currentlyAppliedFilter is QuoteListFilterByTag
+            ? currentlyAppliedFilter.tag
+            : null,
+        searchTerm: currentlyAppliedFilter is QuoteListFilterBySearchTerm
+            ? currentlyAppliedFilter.searchTerm
+            : '',
+        favoritedByUsername:
+            currentlyAppliedFilter is QuoteListFilterByFavorites
+                ? _authenticatedUsername
+                : null,
+        fetchPolicy: fetchPolicy,
+      );
+      try {
+// 1
+        await for (final newPage in pageStream) {
+          final newItemList = newPage.quoteList;
+          final oldItemList = state.itemList ?? [];
+// 2
+          final completeItemList = isRefresh || page == 1
+              ? newItemList
+              : (oldItemList + newItemList);
+          final nextPage = newPage.isLastPage ? null : page + 1;
+// 3
+          yield QuoteListState.success(
+            nextPage: nextPage,
+            itemList: completeItemList,
+            filter: currentlyAppliedFilter,
+            isRefresh: isRefresh,
+          );
+        }
+      } catch (error) {
+        if (error is EmptySearchResultException) {
+// 1
+          yield QuoteListState.noItemsFound(
+            filter: currentlyAppliedFilter,
+          );
+        }
+        if (isRefresh) {
+// 2
+          yield state.copyWithNewRefreshError(
+            error,
+          );
+        } else {
+// 3
+          yield state.copyWithNewError(
+            error,
+          );
+        }
+      }
+    }
+  }
 
-  // TODO: Dispose the auth changes subscription.
+  @override
+  Future<void> close() {
+    _authChangesSubscription.cancel();
+    return super.close();
+  }
 }

@@ -41,11 +41,21 @@ class QuotePagedGridView extends StatelessWidget {
               top: const OpeningQuoteSvgAsset(),
               bottom: const ClosingQuoteSvgAsset(),
               onFavorite: () {
-                // TODO: Forward taps on the favorite button.
+                bloc.add(
+                  isFavorite
+                      ? QuoteListItemUnfavorited(quote.id)
+                      : QuoteListItemFavorited(quote.id),
+                );
               },
               onTap: onQuoteSelected != null
                   ? () async {
-                      // TODO: Open the details screen and notify the Bloc if the user modified the quote in there.
+                      final updateQuote = await onQuoteSelected(quote.id);
+                      if (updateQuote != null &&
+                          updateQuote.isFavorite != quote.isFavorite) {
+                        bloc.add(
+                          QuoteListItemUpdated(updateQuote),
+                        );
+                      }
                     }
                   : null,
             );
@@ -53,7 +63,9 @@ class QuotePagedGridView extends StatelessWidget {
           firstPageErrorIndicatorBuilder: (context) {
             return ExceptionIndicator(
               onTryAgain: () {
-                // TODO: Request the first page again.
+                bloc.add(
+                  const QuoteListFailedFetchRetried(),
+                );
               },
             );
           },
