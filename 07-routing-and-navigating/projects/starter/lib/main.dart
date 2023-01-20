@@ -4,6 +4,7 @@ import 'dart:isolate';
 import 'package:component_library/component_library.dart';
 import 'package:domain_models/domain_models.dart';
 import 'package:fav_qs_api/fav_qs_api.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:forgot_my_password/forgot_my_password.dart';
 import 'package:key_value_storage/key_value_storage.dart';
@@ -17,6 +18,7 @@ import 'package:sign_in/sign_in.dart';
 import 'package:sign_up/sign_up.dart';
 import 'package:update_profile/update_profile.dart';
 import 'package:user_repository/user_repository.dart';
+import 'package:wonder_words/firebase_options.dart';
 import 'package:wonder_words/l10n/app_localizations.dart';
 import 'package:wonder_words/routing_table.dart';
 
@@ -28,6 +30,7 @@ void main() async {
   runZonedGuarded<Future<void>>(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
+      await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
       await initializeMonitoringPackage();
 
       final remoteValueService = RemoteValueService();
