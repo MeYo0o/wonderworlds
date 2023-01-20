@@ -24,7 +24,7 @@ class UserRepository {
   final UserSecureStorage _secureStorage;
   final BehaviorSubject<DarkModePreference> _darkModePreferenceSubject =
       BehaviorSubject();
-  // TODO: Create a listenable property.
+  final BehaviorSubject<User?> _userSubject = BehaviorSubject();
 
   Future<void> upsertDarkModePreference(DarkModePreference preference) async {
     await _localStorage.upsertDarkModePreference(
@@ -46,15 +46,58 @@ class UserRepository {
   }
 
   Future<void> signIn(String email, String password) async {
-    // TODO: Sign in the user by coordinating the Data Sources.
+    try {
+      final apiUser = await remoteApi.signIn(
+        email,
+        password,
+      );
+
+      await _secureStorage.upsertUserInfo(
+        username: apiUser.username,
+        email: apiUser.email,
+        token: apiUser.token,
+      );
+
+      final domainUser = apiUser.toDomainModel();
+
+      _userSubject.add(
+        domainUser,
+      );
+    } on InvalidCredentialsFavQsException catch (_) {
+      throw InvalidCredentialsException();
+    }
   }
 
   Stream<User?> getUser() async* {
-    // TODO: Expose the BehaviorSubject.
+    if (!_userSubject.hasValue) {
+      final userInfo = await Future.wait<String?>(
+        [
+          _secureStorage.readUsername(),
+          _secureStorage.readUserEmail(),
+        ],
+      );
+
+      final username = userInfo[0];
+      final email = userInfo[1];
+      if (email != null && username != null) {
+        _userSubject.add(
+          User(
+            email: email,
+            username: username,
+          ),
+        );
+      } else {
+        _userSubject.add(
+          null,
+        );
+      }
+    }
+// 2
+    yield* _userSubject.stream;
   }
 
   Future<String?> getUserToken() async {
-    // TODO: Provide the user token.
+    return _secureStorage.readUserToken();
   }
 
   Future<void> signUp(

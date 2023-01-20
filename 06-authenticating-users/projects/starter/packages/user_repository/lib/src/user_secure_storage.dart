@@ -5,9 +5,9 @@ class UserSecureStorage {
   static const String _usernameKey = 'wonder-words-username';
   static const String _emailKey = 'wonder-words-email';
 
-  UserSecureStorage(
+  const UserSecureStorage({
     FlutterSecureStorage? secureStorage,
-  ) : _secureStorage = secureStorage ?? const FlutterSecureStorage();
+  }) : _secureStorage = secureStorage ?? const FlutterSecureStorage();
 
   final FlutterSecureStorage _secureStorage;
 
@@ -54,15 +54,15 @@ class UserSecureStorage {
         ],
       );
 
-  Future<void> readUsername() => _secureStorage.read(
+  Future<String?> readUsername() => _secureStorage.read(
         key: _usernameKey,
       );
 
-  Future<void> readUserEmail() => _secureStorage.read(
+  Future<String?> readUserEmail() => _secureStorage.read(
         key: _emailKey,
       );
 
-  Future<void> readUserToken() => _secureStorage.read(
+  Future<String?> readUserToken() => _secureStorage.read(
         key: _tokenKey,
       );
 }
