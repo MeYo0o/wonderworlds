@@ -30,7 +30,9 @@ void main() async {
   runZonedGuarded<Future<void>>(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
-      await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
       await initializeMonitoringPackage();
 
       final remoteValueService = RemoteValueService();
@@ -89,7 +91,19 @@ class _WonderWordsState extends State<WonderWords> {
     noSqlStorage: _keyValueStorage,
   );
 
-  // TODO: Instantiate the RouterDelegate.
+  late final _routerDelegate = RoutemasterDelegate(
+    
+    routesBuilder: (context) => RouteMap(
+      routes: buildRoutingTable(
+        routerDelegate: _routerDelegate,
+        userRepository: _userRepository,
+        quoteRepository: _quoteRepository,
+        remoteValueService: widget.remoteValueService,
+        dynamicLinkService: _dynamicLinkService,
+      ),
+    ),
+  );
+
   final _lightTheme = LightWonderThemeData();
   final _darkTheme = DarkWonderThemeData();
 
@@ -103,7 +117,7 @@ class _WonderWordsState extends State<WonderWords> {
         return WonderTheme(
           lightTheme: _lightTheme,
           darkTheme: _darkTheme,
-          child: MaterialApp(
+          child: MaterialApp.router(
             theme: _lightTheme.materialThemeData,
             darkTheme: _darkTheme.materialThemeData,
             themeMode: darkModePreference?.toThemeMode(),
@@ -118,7 +132,8 @@ class _WonderWordsState extends State<WonderWords> {
               SignUpLocalizations.delegate,
               UpdateProfileLocalizations.delegate,
             ],
-            home: const Placeholder(),
+            routeInformationParser: const RoutemasterParser(),
+            routerDelegate: _routerDelegate,
           ),
         );
       },
