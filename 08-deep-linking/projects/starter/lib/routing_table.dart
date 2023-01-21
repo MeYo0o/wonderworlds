@@ -92,7 +92,16 @@ Map<String, PageBuilder> buildRoutingTable({
             onAuthenticationError: () {
               routerDelegate.push(_PathConstants.signInPath);
             },
-            // TODO: Specify the shareableLinkGenerator parameter.
+            shareableLinkGenerator: (quote) =>
+                dynamicLinkService.generateDynamicLinkUrl(
+              path: _PathConstants.quoteDetailsPath(
+                quoteId: quote.id,
+              ),
+              socialMetaTagParameters: SocialMetaTagParameters(
+                title: quote.body,
+                description: quote.author,
+              ),
+            ),
           ),
         ),
     _PathConstants.signInPath: (_) => MaterialPage(

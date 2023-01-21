@@ -118,7 +118,22 @@ class _WonderWordsState extends State<WonderWords> {
   final _darkTheme = DarkWonderThemeData();
   late StreamSubscription _incomingDynamicLinksSubscription;
 
-  // TODO: Handle initial dynamic link if any.
+  @override
+  void initState() {
+    super.initState();
+    _openInitialDynamicLinkIfAny();
+    _incomingDynamicLinksSubscription =
+        _dynamicLinkService.onNewDynamicLinkPath.listen(
+      _routerDelegate.push,
+    );
+  }
+
+  Future<void> _openInitialDynamicLinkIfAny() async {
+    final path = await _dynamicLinkService.getInitialDynamicLinkPath();
+    if (path != null) {
+      _routerDelegate.push(path);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -134,6 +149,7 @@ class _WonderWordsState extends State<WonderWords> {
             theme: _lightTheme.materialThemeData,
             darkTheme: _darkTheme.materialThemeData,
             themeMode: darkModePreference?.toThemeMode(),
+            debugShowCheckedModeBanner: false,
             supportedLocales: const [
               Locale('en', ''),
               Locale('pt', 'BR'),
