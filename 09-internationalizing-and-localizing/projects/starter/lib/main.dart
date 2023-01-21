@@ -6,6 +6,7 @@ import 'package:domain_models/domain_models.dart';
 import 'package:fav_qs_api/fav_qs_api.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:forgot_my_password/forgot_my_password.dart';
 import 'package:key_value_storage/key_value_storage.dart';
 import 'package:monitoring/monitoring.dart';
@@ -147,10 +148,11 @@ class _WonderWordsState extends State<WonderWords> {
             theme: _lightTheme.materialThemeData,
             darkTheme: _darkTheme.materialThemeData,
             themeMode: darkModePreference?.toThemeMode(),
-            // TODO: Add supported locales.
+            supportedLocales: const [Locale('en', 'US'), Locale('pt', 'BR')],
             localizationsDelegates: const [
-              // TODO: Add Flutter's delegates.
-              // TODO: Add ProfileMenuLocalizations' delegate.
+              GlobalMaterialLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+              ProfileMenuLocalizations.delegate,
               AppLocalizations.delegate,
               ComponentLibraryLocalizations.delegate,
               QuoteListLocalizations.delegate,
