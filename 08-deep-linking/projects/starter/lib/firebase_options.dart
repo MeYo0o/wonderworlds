@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDIeCRSd-O8QK3k3iBSfISU4AUbODJLMB4',
-    appId: '1:546324602922:android:d0ccc4341473bf36076353',
+    appId: '1:546324602922:android:a2f9ea811c10d540076353',
     messagingSenderId: '546324602922',
     projectId: 'wonder-words-kodeco',
     storageBucket: 'wonder-words-kodeco.appspot.com',
@@ -59,11 +59,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyC10KlgpzZTlldxiB-sFGsA5TeT76Lj1R8',
-    appId: '1:546324602922:ios:5d6fee765061c30f076353',
+    appId: '1:546324602922:ios:fff89402acdb5138076353',
     messagingSenderId: '546324602922',
     projectId: 'wonder-words-kodeco',
     storageBucket: 'wonder-words-kodeco.appspot.com',
-    iosClientId: '546324602922-vhco5m6pgnqe75q94uib60hon2co0g44.apps.googleusercontent.com',
-    iosBundleId: 'com.meyo.wonderwords',
+    iosClientId: '546324602922-80425csqkgj5g0bgj86qtb94ot3na3nf.apps.googleusercontent.com',
+    iosBundleId: 'com.raywenderlich.wonderWords',
   );
 }
