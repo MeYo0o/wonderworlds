@@ -27,7 +27,11 @@ class UserRepository {
       BehaviorSubject();
 
   Future<void> upsertDarkModePreference(DarkModePreference preference) async {
-    // TODO: add logic for upserting theme mode
+    await _localStorage.upsertDarkModePreference(
+      preference.toCacheModel(),
+    );
+
+    _darkModePreferenceSubject.add(preference);
   }
 
   Stream<DarkModePreference> getDarkModePreference() async* {

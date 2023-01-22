@@ -40,9 +40,11 @@ abstract class WonderThemeData {
 }
 
 class LightWonderThemeData extends WonderThemeData {
-  // TODO: Add light theme implementation for materialThemeData
   @override
-  ThemeData get materialThemeData => ThemeData();
+  ThemeData get materialThemeData => ThemeData(
+      brightness: Brightness.light,
+      primarySwatch: Colors.black.toMaterialColor(),
+      dividerTheme: _dividerThemeData);
 
   @override
   Color get roundedChoiceChipBackgroundColor => Colors.white;
@@ -73,9 +75,13 @@ class LightWonderThemeData extends WonderThemeData {
 }
 
 class DarkWonderThemeData extends WonderThemeData {
-// TODO: Add dark theme implementation for materialThemeData
   @override
-  ThemeData get materialThemeData => ThemeData();
+  ThemeData get materialThemeData => ThemeData(
+        brightness: Brightness.dark,
+        primarySwatch: Colors.white.toMaterialColor(),
+        dividerTheme: _dividerThemeData,
+        toggleableActiveColor: Colors.white,
+      );
 
   @override
   Color get roundedChoiceChipBackgroundColor => Colors.black;

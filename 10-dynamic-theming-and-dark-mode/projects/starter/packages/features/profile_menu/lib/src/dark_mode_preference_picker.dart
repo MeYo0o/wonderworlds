@@ -31,10 +31,13 @@ class DarkModePreferencePicker extends StatelessWidget {
                 l10n.darkModePreferencesAlwaysDarkTileLabel,
               ),
               value: DarkModePreference.alwaysDark,
-              // TODO: set correct group value
-              groupValue: null,
+              groupValue: currentValue,
               onChanged: (newOption) {
-                // TODO: add ProfileMenuDarkModePreferenceChanged triggering for dark mode
+                bloc.add(
+                  const ProfileMenuDarkModePreferenceChanged(
+                    DarkModePreference.alwaysDark,
+                  ),
+                );
               },
             ),
             RadioListTile<DarkModePreference>(
@@ -42,10 +45,13 @@ class DarkModePreferencePicker extends StatelessWidget {
                 l10n.darkModePreferencesAlwaysLightTileLabel,
               ),
               value: DarkModePreference.alwaysLight,
-              // TODO: set correct group value
-              groupValue: null,
+              groupValue: currentValue,
               onChanged: (newOption) {
-                // TODO: add ProfileMenuDarkModePreferenceChanged triggering for light mode
+                bloc.add(
+                  const ProfileMenuDarkModePreferenceChanged(
+                    DarkModePreference.alwaysLight,
+                  ),
+                );
               },
             ),
             RadioListTile<DarkModePreference>(
@@ -53,10 +59,13 @@ class DarkModePreferencePicker extends StatelessWidget {
                 l10n.darkModePreferencesUseSystemSettingsTileLabel,
               ),
               value: DarkModePreference.useSystemSettings,
-              // TODO: set correct group value
-              groupValue: null,
+              groupValue: currentValue,
               onChanged: (newOption) {
-                // TODO: add ProfileMenuDarkModePreferenceChanged triggering for system mode
+                bloc.add(
+                  const ProfileMenuDarkModePreferenceChanged(
+                    DarkModePreference.useSystemSettings,
+                  ),
+                );
               },
             ),
           ],
