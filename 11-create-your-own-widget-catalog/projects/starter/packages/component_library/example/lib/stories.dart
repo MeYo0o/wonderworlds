@@ -168,11 +168,10 @@ List<Story> getStories(WonderThemeData theme) {
         ),
       ),
     ),
-    //TODO
-    // Story.simple(
-    //   name: 'Centered Circular Progress Indicator',
-    //   child: const CenteredCircularProgressIndicator(),
-    // ),
+    Story.simple(
+      name: 'Centered Circular Progress Indicator',
+      child: const CenteredCircularProgressIndicator(),
+    ),
     Story(
       name: 'Rounded Choice Chip',
       padding: const EdgeInsets.all(

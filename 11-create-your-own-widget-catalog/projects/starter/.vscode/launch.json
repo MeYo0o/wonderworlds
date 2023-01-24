@@ -15,6 +15,16 @@
             ],
         },
         {
+            "name": "storybook",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/packages/component_library/example/main.dart",
+            "args": [
+                "--dart-define",
+                "fav-qs-app-token=d5b1b239e34a07b811d2b64339f9565b",
+            ],
+        },
+        {
             "name": "wonderworlds (profile mode)",
             "request": "launch",
             "type": "dart",
