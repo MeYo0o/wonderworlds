@@ -110,7 +110,26 @@ List<Story> getStories(WonderThemeData theme) {
         ),
       ),
     ),
-    // TODO: Challenge.
+    Story(
+      name: 'Downvote Icon button',
+      section: 'Count Indicator Buttons',
+      builder: (context, kb) {
+        return DownvoteIconButton(
+          count: kb.sliderInt(
+            label: 'counts',
+            initial: 0,
+            min: 0,
+            max: 10,
+            divisions: 9,
+          ),
+          isDownvoted: kb.boolean(
+            label: 'is Downvoted',
+            initial: false,
+          ),
+          onTap: () {},
+        );
+      },
+    ),
     Story(
       name: 'Upvote Icon Button',
       section: 'Count Indicator Buttons',
