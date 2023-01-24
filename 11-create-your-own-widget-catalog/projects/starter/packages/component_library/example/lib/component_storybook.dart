@@ -16,8 +16,9 @@ class ComponentStorybook extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Storybook(
-      children: [
-        ...getStories(theme),
+      children: const [
+        // TODO
+        // ...getStories(theme),
       ],
       initialRoute: 'rounded-choice-chip',
     );

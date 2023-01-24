@@ -31,6 +31,7 @@ void main() async {
   runZonedGuarded<Future<void>>(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
+      
       Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
       await initializeMonitoringPackage();
 
