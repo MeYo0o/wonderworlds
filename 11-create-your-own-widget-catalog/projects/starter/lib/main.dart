@@ -31,8 +31,9 @@ void main() async {
   runZonedGuarded<Future<void>>(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
-      
-      Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+      await Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform);
       await initializeMonitoringPackage();
 
       final remoteValueService = RemoteValueService();
