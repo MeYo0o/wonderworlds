@@ -33,7 +33,6 @@ class CountIndicatorIconButton extends StatelessWidget {
           Text(
             count.toString(),
             style: const TextStyle(
-              // TODO: change the font size for invoking an error
               fontSize: FontSize.small,
             ),
           ),

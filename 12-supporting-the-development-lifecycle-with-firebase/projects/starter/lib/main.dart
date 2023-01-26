@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:isolate';
 
 import 'package:component_library/component_library.dart';
 import 'package:domain_models/domain_models.dart';
@@ -22,29 +23,50 @@ import 'package:wonder_words/l10n/app_localizations.dart';
 import 'package:wonder_words/routing_table.dart';
 import 'package:wonder_words/screen_view_observer.dart';
 
-// TODO: replace the implementation of main() function
 void main() async {
-  // 1
-  WidgetsFlutterBinding.ensureInitialized();
+  late final ErrorReportingService errorReportingService =
+      ErrorReportingService();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  runZonedGuarded(
+    () async {
+      // 1
+      WidgetsFlutterBinding.ensureInitialized();
 
-  // 2
-  await initializeMonitoringPackage();
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+      // await initializeMonitoringPackage();
 
-  // TODO: Perform explicit crash
+      final remoteValueService = RemoteValueService();
+      remoteValueService.load();
 
-  // TODO: Add Error reporting
+      FlutterError.onError = errorReportingService.recordFlutterError;
 
-  // the following line of code will be relavant for next chapter
-  final remoteValueService = RemoteValueService();
-  await remoteValueService.load();
-  runApp(
-    WonderWords(
-      remoteValueService: remoteValueService,
-    ),
+      Isolate.current.addErrorListener(
+        RawReceivePort(
+          (pair) async {
+            final List<dynamic> errorAndStacktrace = pair;
+            await errorReportingService.recordError(
+              errorAndStacktrace.first,
+              errorAndStacktrace.last,
+            );
+          },
+        ).sendPort,
+      );
+
+      runApp(
+        WonderWords(
+          remoteValueService: remoteValueService,
+        ),
+      );
+    },
+    (error, stack) {
+      errorReportingService.recordError(
+        error,
+        stack,
+        fatal: true,
+      );
+    },
   );
 }
 

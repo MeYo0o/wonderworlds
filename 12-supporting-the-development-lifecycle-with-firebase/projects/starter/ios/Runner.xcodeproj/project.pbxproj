@@ -139,7 +139,6 @@
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				4583D8F74C1051D92B50A92D /* [CP] Embed Pods Frameworks */,
-				EB24674029830AA200EA8FF9 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -266,23 +265,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build\n";
-		};
-		EB24674029830AA200EA8FF9 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "$PODS_ROOT/FirebaseCrashlytics/upload-symbols --build-phase --\nvalidate -ai <1:546324602922:ios:5d6fee765061c30f076353>\n$PODS_ROOT/FirebaseCrashlytics/upload-symbols --build-phase -ai\n<1:546324602922:ios:5d6fee765061c30f076353>\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
