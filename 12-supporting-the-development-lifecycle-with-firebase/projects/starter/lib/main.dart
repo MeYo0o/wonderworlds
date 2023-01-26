@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:isolate';
 
 import 'package:component_library/component_library.dart';
 import 'package:domain_models/domain_models.dart';
 import 'package:fav_qs_api/fav_qs_api.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:forgot_my_password/forgot_my_password.dart';
@@ -17,14 +17,19 @@ import 'package:sign_in/sign_in.dart';
 import 'package:sign_up/sign_up.dart';
 import 'package:update_profile/update_profile.dart';
 import 'package:user_repository/user_repository.dart';
+import 'package:wonder_words/firebase_options.dart';
 import 'package:wonder_words/l10n/app_localizations.dart';
 import 'package:wonder_words/routing_table.dart';
-import 'package:wonder_words/screen_view_observer.dart';
 
 // TODO: replace the implementation of main() function
 void main() async {
   // 1
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   // 2
   await initializeMonitoringPackage();
 
@@ -58,10 +63,10 @@ class _WonderWordsState extends State<WonderWords> {
   final _keyValueStorage = KeyValueStorage();
   final _analyticsService = AnalyticsService();
   final _dynamicLinkService = DynamicLinkService();
-  late final _favQsApi = FavQsApi(
+  late final dynamic _favQsApi = FavQsApi(
     userTokenSupplier: () => _userRepository.getUserToken(),
   );
-  late final _quoteRepository = QuoteRepository(
+  late final dynamic _quoteRepository = QuoteRepository(
     remoteApi: _favQsApi,
     keyValueStorage: _keyValueStorage,
   );
@@ -70,7 +75,7 @@ class _WonderWordsState extends State<WonderWords> {
     noSqlStorage: _keyValueStorage,
   );
 
-  late final _routerDelegate = RoutemasterDelegate(
+  late final dynamic _routerDelegate = RoutemasterDelegate(
     observers: [
       // TODO: add observers to RoutemasterDelegate
     ],
