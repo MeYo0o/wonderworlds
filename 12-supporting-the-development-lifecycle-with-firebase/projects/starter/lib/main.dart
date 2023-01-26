@@ -20,6 +20,7 @@ import 'package:user_repository/user_repository.dart';
 import 'package:wonder_words/firebase_options.dart';
 import 'package:wonder_words/l10n/app_localizations.dart';
 import 'package:wonder_words/routing_table.dart';
+import 'package:wonder_words/screen_view_observer.dart';
 
 // TODO: replace the implementation of main() function
 void main() async {
@@ -66,7 +67,7 @@ class _WonderWordsState extends State<WonderWords> {
   late final dynamic _favQsApi = FavQsApi(
     userTokenSupplier: () => _userRepository.getUserToken(),
   );
-  late final dynamic _quoteRepository = QuoteRepository(
+  late final _quoteRepository = QuoteRepository(
     remoteApi: _favQsApi,
     keyValueStorage: _keyValueStorage,
   );
@@ -75,9 +76,9 @@ class _WonderWordsState extends State<WonderWords> {
     noSqlStorage: _keyValueStorage,
   );
 
-  late final dynamic _routerDelegate = RoutemasterDelegate(
+  late final RoutemasterDelegate _routerDelegate = RoutemasterDelegate(
     observers: [
-      // TODO: add observers to RoutemasterDelegate
+      ScreenViewObserver(analyticsService: _analyticsService),
     ],
     routesBuilder: (context) {
       return RouteMap(
