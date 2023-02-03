@@ -26,6 +26,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   routemaster: ^1.0.1
+  firebase_core: ^1.24.0
   key_value_storage:
     path: packages/key_value_storage
   fav_qs_api:
