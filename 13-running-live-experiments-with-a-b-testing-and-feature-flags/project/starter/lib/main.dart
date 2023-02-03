@@ -39,7 +39,7 @@ void main() async {
       await initializeMonitoringPackage();
 
       final remoteValueService = RemoteValueService();
-      // TODO: add loading feature flags from remote config
+      await remoteValueService.load();
 
       FlutterError.onError = errorReportingService.recordFlutterError;
 
