@@ -61,10 +61,14 @@ dependencies:
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
-  # TODO: add missing package
+  integration_test:
+    sdk: flutter
   flutter_test:
     sdk: flutter
   flutter_lints: ^1.0.4
+
+dependency_overrides:
+  firebase_core_platform_interface: 4.5.1
 
 flutter_icons:
   android: true
