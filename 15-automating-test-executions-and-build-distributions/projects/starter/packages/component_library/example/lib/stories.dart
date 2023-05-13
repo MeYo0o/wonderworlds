@@ -1,13 +1,13 @@
-import 'package:component_library/component_library.dart';
+import 'package:component_library/component_library.dart' as cl;
 import 'package:flutter/material.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
-List<Story> getStories(WonderThemeData theme) {
+List<Story> getStories(cl.WonderThemeData theme) {
   return [
     Story.simple(
       name: 'Simple Expanded Elevated Button',
       section: 'Buttons',
-      child: ExpandedElevatedButton(
+      child: cl.ExpandedElevatedButton(
         label: 'Press me',
         onTap: () {},
       ),
@@ -15,7 +15,7 @@ List<Story> getStories(WonderThemeData theme) {
     Story(
       name: 'Expanded Elevated Button',
       section: 'Buttons',
-      builder: (_, k) => ExpandedElevatedButton(
+      builder: (_, k) => cl.ExpandedElevatedButton(
         label: k.text(
           label: 'label',
           initial: 'Press me',
@@ -51,7 +51,7 @@ List<Story> getStories(WonderThemeData theme) {
     Story(
       name: 'InProgress Expanded Elevated Button',
       section: 'Buttons',
-      builder: (_, k) => ExpandedElevatedButton.inProgress(
+      builder: (_, k) => cl.ExpandedElevatedButton.inProgress(
         label: k.text(
           label: 'label',
           initial: 'Processing',
@@ -61,7 +61,7 @@ List<Story> getStories(WonderThemeData theme) {
     Story(
       name: 'InProgress Text Button',
       section: 'Buttons',
-      builder: (_, k) => InProgressTextButton(
+      builder: (_, k) => cl.InProgressTextButton(
         label: k.text(
           label: 'label',
           initial: 'Processing',
@@ -71,7 +71,7 @@ List<Story> getStories(WonderThemeData theme) {
     Story(
       name: 'Favorite Button',
       section: 'Buttons',
-      builder: (_, k) => FavoriteIconButton(
+      builder: (_, k) => cl.FavoriteIconButton(
         onTap: () {},
         isFavorite: k.boolean(
           label: 'isFavorite',
@@ -82,12 +82,12 @@ List<Story> getStories(WonderThemeData theme) {
     Story.simple(
       name: 'Share Icon Button',
       section: 'Buttons',
-      child: ShareIconButton(onTap: () {}),
+      child: cl.ShareIconButton(onTap: () {}),
     ),
     Story(
       name: 'Count Indicator Icon Button',
       section: 'Count Indicator Buttons',
-      builder: (_, k) => CountIndicatorIconButton(
+      builder: (_, k) => cl.CountIndicatorIconButton(
         count: k.sliderInt(
           label: 'count',
         ),
@@ -114,7 +114,7 @@ List<Story> getStories(WonderThemeData theme) {
     Story(
       name: 'Upvote Icon Button',
       section: 'Count Indicator Buttons',
-      builder: (_, k) => UpvoteIconButton(
+      builder: (_, k) => cl.UpvoteIconButton(
         count: k.sliderInt(
           label: 'count',
           max: 10,
@@ -132,7 +132,7 @@ List<Story> getStories(WonderThemeData theme) {
     Story(
       name: 'Exception Indicator',
       section: 'Indicators',
-      builder: (_, k) => ExceptionIndicator(
+      builder: (_, k) => cl.ExceptionIndicator(
         title: k.text(
           label: 'title',
           initial: 'Exception title',
@@ -150,9 +150,9 @@ List<Story> getStories(WonderThemeData theme) {
       ),
     ),
     Story(
-      name: 'QuoteCard',
+      name: 'cl.QuoteCard',
       section: 'Quote',
-      builder: (_, k) => QuoteCard(
+      builder: (_, k) => cl.QuoteCard(
         isFavorite: k.boolean(
           label: 'Is Favorite',
           initial: false,
@@ -181,7 +181,7 @@ List<Story> getStories(WonderThemeData theme) {
           ),
         ),
       ),
-      builder: (_, k) => QuoteCard(
+      builder: (_, k) => cl.QuoteCard(
         isFavorite: k.boolean(
           label: 'Is Favorite',
           initial: false,
@@ -208,7 +208,7 @@ List<Story> getStories(WonderThemeData theme) {
           children: [for (int i = 0; i < 15; i++) child],
         ),
       ),
-      builder: (_, k) => QuoteCard(
+      builder: (_, k) => cl.QuoteCard(
         isFavorite: k.boolean(
           label: 'Is Favorite',
           initial: false,
@@ -225,14 +225,14 @@ List<Story> getStories(WonderThemeData theme) {
     ),
     Story.simple(
       name: 'Centered Circular Progress Indicator',
-      child: const CenteredCircularProgressIndicator(),
+      child: const cl.CenteredCircularProgressIndicator(),
     ),
     Story(
       name: 'Rounded Choice Chip',
       padding: const EdgeInsets.all(
-        Spacing.medium,
+        cl.Spacing.medium,
       ),
-      builder: (_, k) => RoundedChoiceChip(
+      builder: (_, k) => cl.RoundedChoiceChip(
         label: k.text(
           label: 'label',
           initial: 'I am a Chip!',
@@ -317,9 +317,9 @@ List<Story> getStories(WonderThemeData theme) {
     Story(
       name: 'Chevron List Tile',
       padding: const EdgeInsets.all(
-        Spacing.medium,
+        cl.Spacing.medium,
       ),
-      builder: (_, k) => ChevronListTile(
+      builder: (_, k) => cl.ChevronListTile(
         label: k.text(
           label: 'label',
           initial: 'Update Profile',
@@ -332,16 +332,16 @@ List<Story> getStories(WonderThemeData theme) {
     ),
     Story.simple(
       name: 'Row App Bar',
-      child: const RowAppBar(
+      child: const cl.RowAppBar(
         children: [
-          FavoriteIconButton(
+          cl.FavoriteIconButton(
             isFavorite: true,
           ),
-          UpvoteIconButton(
+          cl.UpvoteIconButton(
             count: 10,
             isUpvoted: true,
           ),
-          DownvoteIconButton(
+          cl.DownvoteIconButton(
             count: 5,
             isDownvoted: false,
           ),
@@ -351,7 +351,7 @@ List<Story> getStories(WonderThemeData theme) {
     Story(
       name: 'Shrinkable Text',
       builder: (_, k) => SafeArea(
-        child: ShrinkableText(
+        child: cl.ShrinkableText(
           k.text(
             label: 'text',
             initial:
@@ -360,19 +360,19 @@ List<Story> getStories(WonderThemeData theme) {
           style: k.options(
             label: 'style',
             initial: theme.quoteTextStyle.copyWith(
-              fontSize: FontSize.xxLarge,
+              fontSize: cl.FontSize.xxLarge,
             ),
             options: [
               Option(
                 'XX large',
                 theme.quoteTextStyle.copyWith(
-                  fontSize: FontSize.xxLarge,
+                  fontSize: cl.FontSize.xxLarge,
                 ),
               ),
               Option(
                 'Small',
                 theme.quoteTextStyle.copyWith(
-                  fontSize: FontSize.small,
+                  fontSize: cl.FontSize.small,
                 ),
               ),
             ],
